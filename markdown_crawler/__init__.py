@@ -71,6 +71,7 @@ def crawl(
     target_links: Union[str, List[str]] = DEFAULT_TARGET_LINKS,
     target_content: Union[str, List[str]] = None,
     valid_paths: Union[str, List[str]] = None,
+    exclude_paths: Union[str, List[str]] = None,
     is_domain_match: Optional[bool] = DEFAULT_DOMAIN_MATCH,
     is_base_path_match: Optional[bool] = DEFAULT_BASE_PATH_MATCH,
     is_links: Optional[bool] = False
@@ -147,6 +148,7 @@ def crawl(
         base_url,
         target_links,
         valid_paths=valid_paths,
+        exclude_paths=exclude_paths,
         is_domain_match=is_domain_match,
         is_base_path_match=is_base_path_match    
     )
@@ -191,11 +193,15 @@ def get_target_links(
     base_url: str,
     target_links: List[str] = DEFAULT_TARGET_LINKS,
     valid_paths: Union[List[str], None] = None,
+    exclude_paths: Union[List[str], None] = None,
     is_domain_match: Optional[bool] = DEFAULT_DOMAIN_MATCH,
     is_base_path_match: Optional[bool] = DEFAULT_BASE_PATH_MATCH
 ) -> List[str]:
 
     child_urls = []
+
+    logger.info(f'valid_paths : {valid_paths}') 
+    logger.info(f'exclude_paths : {exclude_paths}') 
 
     # Get all urls from target_links
     for target in soup.find_all(target_links):
@@ -213,6 +219,14 @@ def get_target_links(
         # ---------------------------------
         if is_domain_match and child_url.netloc != urllib.parse.urlparse(base_url).netloc:
             continue
+
+        if exclude_paths:
+            excluded = False
+            for exclude_path in exclude_paths:
+                if child_url.path.startswith(urllib.parse.urlparse(exclude_path).path):
+                    excluded = True
+                    break
+            if excluded: continue
 
         if is_base_path_match and child_url.path.startswith(urllib.parse.urlparse(base_url).path):
             result.append(u)
@@ -239,6 +253,7 @@ def worker(
     target_links: Union[List[str], None] = DEFAULT_TARGET_LINKS,
     target_content: Union[List[str], None] = None,
     valid_paths: Union[List[str], None] = None,
+    exclude_paths: Union[List[str], None] = None,
     is_domain_match: bool = None,
     is_base_path_match: bool = None,
     is_links: Optional[bool] = False
@@ -260,6 +275,7 @@ def worker(
             target_links,
             target_content,
             valid_paths,
+            exclude_paths,
             is_domain_match,
             is_base_path_match,
             is_links
@@ -281,6 +297,7 @@ def md_crawl(
         target_links: Union[str, List[str]] = DEFAULT_TARGET_LINKS,
         target_content: Union[str, List[str]] = None,
         valid_paths: Union[str, List[str]] = None,
+        exclude_paths: Union[List[str], None] = None,
         is_domain_match: Optional[bool] = None,
         is_base_path_match: Optional[bool] = None,
         is_debug: Optional[bool] = False,
@@ -303,6 +320,9 @@ def md_crawl(
 
     if isinstance(valid_paths, str):
         valid_paths = valid_paths.split(',') if ',' in valid_paths else [valid_paths]
+
+    if isinstance(exclude_paths, str):
+        exclude_paths = exclude_paths.split(',') if ',' in exclude_paths else [exclude_paths]
 
     if is_debug:
         logging.basicConfig(level=logging.DEBUG)
@@ -343,6 +363,7 @@ def md_crawl(
                 target_links,
                 target_content,
                 valid_paths,
+                exclude_paths,
                 is_domain_match,
                 is_base_path_match,
                 is_links
