@@ -175,13 +175,15 @@ def get_target_content(
     # ---------------------------
     else:
         max_text_length = 0
+        ok = False
         for tag in soup.find_all(DEFAULT_TARGET_CONTENT):
             text_length = len(tag.get_text())
             if text_length > max_text_length:
                 max_text_length = text_length
                 main_content = tag
+                ok = True
 
-        content = str(main_content)
+        content = str(main_content) if ok else ""
 
     return content if len(content) > 0 else False
 
