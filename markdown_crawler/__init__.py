@@ -137,7 +137,7 @@ def crawl(
             # ------------------------------
             # Write markdown content to file
             # ------------------------------
-            with open(file_path, 'w') as f:
+            with open(file_path, 'w', encoding="utf-8") as f:
                 f.write(output)
         else:
             logger.error(f'❌ Empty content for {file_path}. Please check your targets skipping.')
