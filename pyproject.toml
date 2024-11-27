@@ -17,6 +17,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "beautifulsoup4>=4.10.0",
+    "markdownify>=0.14.1",
+    "requests>=2.25.1",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/paulpierre/markdown-crawler"
