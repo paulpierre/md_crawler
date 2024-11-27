@@ -41,6 +41,12 @@ Markdown by nature is human readable and maintains document structure while keep
 
 <br><br>
 
+# Quickstart
+
+If you wish to simply use it in the CLI, you can run it with [uvx](https://docs.astral.sh/uv/guides/tools/) without installing:
+
+    uvx --from git+https://github.com/snth/markdown-crawler.git@uvx markdown-crawler
+
 # 🚀 Get started
 
 If you wish to simply use it in the CLI, you can run the following command:
