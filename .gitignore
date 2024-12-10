@@ -2,6 +2,7 @@
 markdown/
 env/
 venv/
+.venv/
 build/
 *.egg-info/
 __pycache__/
